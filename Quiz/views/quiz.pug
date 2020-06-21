@@ -1,0 +1,240 @@
+html
+    head
+        title Quiz
+    style
+        include quiz.css
+    body
+        div(id="intro")
+            header Zasady Quizu
+            ul(id="rules")
+                li masz do rozwiązania różne quizy algebraiczne
+                li po naciśnięciu przycisku z którymkolwiek z quizów, wybrany quiz zostanie natychmiastowo uruchomiony
+                li wpisuj wyniki działań (w postaci liczb całkowitych) w pola do tego przeznaczone
+                li możesz dowolnie przechodzić między zadaniami za pomocą przycisków "Następne" i "Poprzednie"
+                li udzielenie błędnej odpowiedzi skutkuje karnymi sekundami (każde pytanie ma wyznaczoną ilość karnych sekund)
+                li twój wynik to suma czasu spędzonego nad rozwiązywaniem quizu i otrzymanych sekund karnych
+                li naciśnięcie przycisku "Stop" możliwe jest dopiero po udzieleniu odpowiedzi na wszystkie pytania, zatwierdza ono wszystkie odpowiedzi, kończy quiz i zapisuje podejście w bazie
+                li po zapisaniu wyniku NIE możesz podejść do tego samego quizu po raz kolejny, naciśnięcie przycisku z quizem, do którego już podchodziliśmy nie spowoduje wyświetlenia zadań
+                li naciśnięcie przycisku "Anuluj" kończy quiz bez zapisywania wyniku i pozwala na ponowne podejście do tego quizu w późniejszym czasie.
+                li za pomocą przycisków z lewej strony ekranu możesz przeglądać statystyki dotyczące zapisanych podejść do quizu (Twoich i innych użytkowników)
+            div(id="button")
+                ul(id="links")
+                    each quiz in quizes
+                        form(action="../quiz/" + quiz.id)
+                            input(type="submit" class="button" value="Quiz " + quiz.id)
+            div(id="button2")
+                ul(id="links2")
+                    each quiz in quizes
+                        form(action="../stats/" + quiz.id)
+                            input(type="submit" class="button" value="Statystyki quizu " + quiz.id)
+
+        div(id="quiz")
+            p(id="timer") 0:00
+            header(id="number")
+            p(id="penalty")
+            p(id="text")
+            button(class="scroll" onclick="previous()" disabled="disabled") Poprzednie
+            input(type="text" id="input" oninput="checkIfCompleted()")
+            button(class="scroll" onclick="next()" value="Następne") Następne
+            br
+            br
+            button(id="stop" onclick="finish()" disabled="disabled") Stop
+            br
+            form(action="../../menu")
+                input(id="cancel" type="submit" value="Anuluj")
+        div(id="form")
+            form(action="" method="post" id="send")
+                input(type="hidden" name="answers" id="answers")
+                input(type="hidden" name="percents" id="percents")
+        div(id="login")
+            p Zalogowano jako #{user}
+            form(action="../../logout" method="post")
+                input(type="submit" class="button" value="Wyloguj się" id="logout")
+    
+    script.
+        // Ustawia zmienne globalne opisujące przebieg rozwiązywania quizu.
+        let answers = []; //odpowiedzi użytkownika na każde z pytań
+        let page = 0; //aktualnie wyświetlane pytanie (indeksowane od 0)
+        let total = 0; //całkowity czas rozwiązywanie quizu
+        let penTotal = 0; //suma kar dla aktualnego rozwiązania
+        let lastEnter = []; //czasy ostatnich wyświetleń pytań (s)
+        let taskTimes = []; //sumy czasów wyświetlania pytań (s)
+        let size = 0;
+        let secs = 0; //sekundy od rozpoczęcia quizu
+        let timer = null; //będzie przechowywć ID interwału z czasomierzem
+        let quiz = [];
+
+        // Sprawdza, czy argument nie jest NULLem bądź pustym słowem.
+        function notEmpty(element) {
+            if (element === undefined || element === null || element === "") {
+                return false;
+            }
+            return true;
+        }
+
+        function arrayNotEmpty(array) {
+            let empty = false;
+            for (var i = 0; i < array.length && !empty; i++) {
+                if (!notEmpty(array[i])) {
+                empty = true;
+                }
+            }
+            return empty;
+        }
+
+        function next() {
+            /* Notujemy czas opuszczenia poprzedniego zadania,
+             * dodajemy do sumy czasu spędzonego nad tym zadaniem.
+            */
+            let act = secs;
+            taskTimes[page] += (act - lastEnter[page]);
+
+            // Przełączamy zmienną page i ustawiamy czas wyświetlenia nowego zadania.
+            page += 1;
+            lastEnter[page] = act;
+
+            /* Wyświetlamy nr, treść i karę odpowiednią dla aktualnego zadania.
+            * W polu "input" wyświetlamy aktualnie zapisaną odpowiedź użytkownika
+            * na dane zadanie, o ile została już udzielona.
+            */
+            document.getElementById("text").innerHTML = (quiz[page]["task"] + "?").fontsize(6);
+            document.getElementById("number").innerHTML = "Zadanie " +
+                            (page + 1).toString();
+            document.getElementById("penalty").innerHTML = "kara za błąd: " +
+                            quiz[page]["penalty"].toString() + " sekund";
+            let input = (document.getElementById("input"));
+            let actVal = answers[page];
+            if (notEmpty(actVal)) {
+                 input.value = actVal;
+            } else {
+                input.value = "";
+            }
+            let n = document.getElementsByClassName("scroll")[1];
+            let p = document.getElementsByClassName("scroll")[0];
+            p.disabled = false;
+            if (page === size - 1) {
+                n.disabled = true;
+            }
+        }
+
+        // Działanie przycisku "Poprzednie", analogicznie jak "Następne".
+        function previous() {
+            let act = secs;
+            taskTimes[page] += act - lastEnter[page];
+            page -= 1;
+            lastEnter[page] = act;
+            document.getElementById("text").innerHTML = (quiz[page]["task"] + "?").fontsize(6);
+            document.getElementById("number").innerHTML = "Zadanie " +
+                                 (page + 1).toString();
+            document.getElementById("penalty").innerHTML = "kara za błąd: " +
+                                quiz[page]["penalty"].toString() + " sekund";
+            let input = (document.getElementById("input"));
+            let actVal = answers[page];
+            if (notEmpty(actVal)) {
+                input.value = actVal;
+            } else {
+                input.value = "";
+            }
+            let n = document.getElementsByClassName("scroll")[1];
+            let p = document.getElementsByClassName("scroll")[0];
+            n.disabled = false;
+            if (page === 0) {
+                p.disabled = true;
+            }
+        }
+
+        // Zamienia czas podany w sekundach na napis go reprezentujący (np. 64 -> 1:04)
+        function secondsToString(time) {
+            let mins = Math.floor(time / 60).toString();
+            let secs = (time % 60).toString();
+            let result = mins + ":";
+            if (parseInt(secs) < 10) {
+                result += "0";
+            }
+            result += secs;
+            return result;
+        }
+
+        /* Pobiera odpowiedź z wejścia i zapisuje ją
+        * pod odpowiednim indeksem tablicy "answers".
+        */
+        function takeAnswer() {
+            let element = document.getElementById("input");
+            let a = element.value;
+            answers[page] = a;
+        }
+
+        /* Zapisuje aktulnie edytowaną odpowiedź i sprawdza,
+        * czy udzielono odpowiedzi na wszystkie pytania.
+        * Jeśli tak, odblokowuje przycisk "Stop".
+        * Wywoływana przy każdym kontakcie z polem wejścia (oninput).
+        */
+        function checkIfCompleted() {
+            takeAnswer();
+            let button = document.getElementById("stop");
+            if (!arrayNotEmpty(answers)) {
+                button.disabled = false;
+            } else {
+                button.disabled = true;
+            }
+        }
+
+        // Zakończenie quizu przyciskiem "Stop".
+        function finish() {
+            //Wyłączamy czasomierz.
+            clearInterval(timer);
+
+            // Notujemy czas zakończenia przeglądania ostatniego zadania.
+            // Liczymy całkowity czas rozwiązywania (suma czasów ze wszystkich zadań)
+            let endTime = secs;
+            taskTimes[page] += endTime - lastEnter[page];
+            for (var i = 0; i < size; ++i) {
+                total += taskTimes[i];
+            }
+
+            // Obliczamy procenty czasu spędzonego nad każddym zadaniem.
+            let percents = []
+            for (var i = 0; i < size; ++i) {
+                percents.push(taskTimes[i] / total);
+            }
+
+            // Ukrywamy kontener z quizem.
+            let quiz = document.getElementById("quiz");
+            quiz.style.display = "none";
+            
+            // Wysyłamy do serwera odpowiedzi i statystyki czasu.
+            document.getElementById("answers").value = answers.toString();
+            document.getElementById("percents").value = percents.toString();
+            document.getElementById("send").submit();
+        } 
+        
+        // Uruchamiamy quiz, jeśli szablon został wyświetlon na żądanie "/quiz/:id"
+        let check = '#{quiz}';
+        if(check) {
+            // Uniemozliwiamy wylogowanie się podczas rozwiązywania quizu.
+            document.getElementById("logout").style.display = "none"
+            let q = check.replace(/&quot;/g,'"');
+            quiz = JSON.parse(q);
+            
+            size = quiz.length;
+            for (var i = 0; i < size; i++) {
+                answers.push("");
+                lastEnter.push(0);
+                taskTimes.push(0);
+            }
+            
+            document.getElementById("quiz").style.display = "inline";
+            document.getElementById("text").innerHTML = (quiz[0]["task"] + "?").fontsize(6);
+            document.getElementById("number").innerHTML = "Zadanie 1";
+            document.getElementById("penalty").innerHTML = "kara za błąd: " +
+            quiz[0]["penalty"].toString() + " sekund";
+            var input = (document.getElementById("input"));
+            input.value = "";
+
+            // Puszczamy czasomierz.
+            timer = setInterval(() => {
+                secs += 1;
+                document.getElementById("timer").innerHTML = secondsToString(secs);
+            }, 1000);
+        }
+        

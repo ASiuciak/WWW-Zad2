@@ -1,0 +1,45 @@
+body {
+    background-color: sandybrown;
+    text-align: center;
+}
+
+#login {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    font-size: 25px;
+    font-weight: 400;
+}
+
+.button {
+    background-color: orange;
+    border: none;
+    margin-left: 20px;
+    margin-bottom: 10px;
+    color: indigo;
+    padding: 15px 30px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 20px;
+}
+
+header {
+    text-align: center;
+    font-size: 40px;
+    text-transform: uppercase;
+    color: blue;
+}
+
+ul {
+    list-style-type:none;
+    display:flex;
+    justify-content: center;
+  
+}
+ul li{
+    display: list-item;
+    background: black;
+    padding: 5px 10px;
+    color:white;
+    margin: 0 3px;
+}

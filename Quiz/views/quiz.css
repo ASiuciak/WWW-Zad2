@@ -1,0 +1,126 @@
+body {
+    background-color: sandybrown;
+    display: grid;
+    grid-template-rows: 300px 200px auto;
+    grid-template-columns: auto auto;
+}
+
+.button {
+    background-color: orange;
+    border: none;
+    margin-left: 20px;
+    margin-bottom: 10px;
+    color: indigo;
+    padding: 15px 30px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 20px;
+}
+
+@media screen and (max-width: 1000px){
+    body {
+      display: inline-block;
+    }
+  }
+#intro {
+    grid-row: 1;
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+#login {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    font-size: 25px;
+    font-weight: 400;
+}
+#quiz {
+    position: relative;
+    grid-row: 2;
+    grid-column: 1;
+    text-align: center;
+    display: none;
+}
+#results {
+    grid-row: 2;
+    grid-column: 1;
+    text-align: center;
+}
+@media screen and (max-width: 1000px){
+    #img{
+        display: none;
+    }
+    #login{
+        display: none;
+    }
+}
+header {
+    text-align: center;
+    font-size: 40px;
+    text-transform: uppercase;
+    color: blue;
+}
+#button {
+    text-align: center;
+}
+
+li {
+    font-weight: 700;
+}
+
+input[type=text] {
+    font-size: 20px;
+    margin: 8px;
+}
+
+button {
+    border: 1mm solid;
+    border-collapse: collapse;
+    padding: 15px 30px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 20px;
+    color: paleturquoise;
+}
+
+button:disabled {
+    opacity: 0.2;
+}
+#start {
+    background-color: green;
+    border-color: blue; 
+}
+#main {
+    float: right;
+    background-color: darkgoldenrod;
+}
+.scroll {
+    background-color: darkolivegreen;
+    border-color: darkred;
+}
+#cancel {
+    border: 1mm solid;
+    border-collapse: collapse;
+    padding: 15px 30px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 20px;
+    color: paleturquoise;
+    float: left;
+    background-color: darkslateblue;
+    border-color: deepskyblue;
+}
+#stop {
+    background-color: red;
+    border-color: black;
+}
+#text {
+    color: royalblue;
+}
+#timer {
+    position: absolute;
+    left: 20px;
+    font-size: 35px;
+    font-weight: 600;
+    color: red;
+}

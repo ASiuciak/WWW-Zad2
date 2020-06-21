@@ -1,0 +1,12 @@
+html
+    style
+        include change.css
+    body
+        form(id="change" action="" method="post")
+            label(for="new1") Nowe hasło: 
+            input(type="password" name="new1" id="new1")
+            br
+            label(for="new1") Powtórz nowe hasło:
+            input(type="password" name="new2" id="new2")
+            br
+            input(type="submit" class="button" value="Zmień")

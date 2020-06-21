@@ -1,0 +1,33 @@
+html
+    head
+        title Stats
+    style
+        include stats.css
+    script.
+        
+    body
+        header Statystyki quizu #{id}
+        div(id="login")
+            p Zalogowano jako #{user}
+            form(action="../../logout" method="post")
+                input(type="submit" class="button" value="Wyloguj się" id="logout")
+        div(id="content")
+            h1 Najlepsze wyniki:
+            ul(id="best")
+                each row in results
+                    li= row.user + " - " + row.total + " sekund"
+            h1 Średni czas potrzebny na rozwiązanie zadania:
+        form(action="../menu" method="get")
+            input(type="submit" class="button" value="Powrót")
+    script.
+        let check = '#{avgs}'
+        if (check) {
+            let arr = check.split(",")
+            let list = document.createElement("ul");
+            for (var i = 0; i < arr.length; i++) {
+                let element = document.createElement("li")
+                element.innerHTML = "Zadanie " + (i + 1) + " - " + arr[i] + " sekund"
+                list.appendChild(element)
+            }
+            document.getElementById("content").appendChild(list)
+        }

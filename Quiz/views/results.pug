@@ -1,0 +1,65 @@
+html
+    style
+        include results.css
+    body
+        header Wyniki
+        div(id="stats")
+            ul(id="results")
+        form(method="../../menu" action="get")
+            input(type="submit", class="button", value="Powrót")
+    script.
+
+        // Zamienia czas podany w sekundach na napis go reprezentujący (np. 64 -> 1:04)
+        function secondsToString(time) {
+            let mins = Math.floor(time / 60).toString();
+            let secs = (time % 60).toString();
+            let result = mins + ":";
+            if (parseInt(secs) < 10) {
+                result += "0";
+            }
+            result += secs;
+            return result;
+        }
+
+        /* Tworzy i zwraca paragraf tekstowy.
+        * Wykorzystywana przy tworzeniu tekstów opisujących wynik podejścia.
+        */
+        function finalPara(text) {
+            let t1 = document.createElement('p');
+            t1.style.fontSize = "20px";
+            let con1 = document.createTextNode(text);
+            t1.appendChild(con1);
+            return t1;
+        }
+        let check = '#{quiz}';
+        if(check) {
+            let q = check.replace(/&quot;/g,'"');
+            quiz = JSON.parse(q);
+            size = quiz.length;
+            let ans = '#{answers}';
+            let answers = ans.split(",");
+            let total = parseInt('#{total}');
+            let penTotal = 0;
+            for (var i = 0; i < size; i++) {
+                let li = document.createElement("li");
+                li.style.fontsize = "30px";
+                if (parseInt(quiz[i]["solution"]) === parseInt(answers[i])) {
+                    li.innerHTML = quiz[i]["task"] + answers[i];
+                    li.style.color = "green";
+                } else {
+                    li.innerHTML = quiz[i]["task"] + quiz[i]["solution"] + " (błędna odpowiedź: " + answers[i] + ")";
+                    li.style.color = "red";
+                    penTotal += parseInt(quiz[i]["penalty"]);
+                }
+                document.getElementById("results").appendChild(li);
+            }
+            let t1 = finalPara('Czas rozwiązywania: ' + secondsToString(total));
+            let t2 = finalPara('Kary łącznie: '  + secondsToString(penTotal));
+            let t3 = finalPara('Rezultat: ' + secondsToString(total + penTotal));
+            t3.style.fontSize = "30px";
+            t3.style.fontWeight = "400";
+            t3.style.color = "blue";
+            document.getElementById("stats").appendChild(t1);
+            document.getElementById("stats").appendChild(t2);
+            document.getElementById("stats").appendChild(t3);
+        }
