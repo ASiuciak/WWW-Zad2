@@ -21,7 +21,7 @@ html
                 ul(id="links")
                     each quiz in quizes
                         form(action="../quiz/" + quiz.id)
-                            input(type="submit" class="button" value="Quiz " + quiz.id)
+                            input(type="submit" class="button" value="Quiz " + quiz.id id="q" + quiz.id)
             div(id="button2")
                 ul(id="links2")
                     each quiz in quizes
@@ -35,7 +35,7 @@ html
             p(id="text")
             button(class="scroll" onclick="previous()" disabled="disabled") Poprzednie
             input(type="text" id="input" oninput="checkIfCompleted()")
-            button(class="scroll" onclick="next()" value="Następne") Następne
+            button(id="nxt" class="scroll" onclick="next()" value="Następne") Następne
             br
             br
             button(id="stop" onclick="finish()" disabled="disabled") Stop
@@ -207,6 +207,11 @@ html
             document.getElementById("percents").value = percents.toString();
             document.getElementById("send").submit();
         } 
+
+        let err = '#{error}';
+        if (err) {
+            alert(err);
+        }
         
         // Uruchamiamy quiz, jeśli szablon został wyświetlon na żądanie "/quiz/:id"
         let check = '#{quiz}';

@@ -221,7 +221,13 @@ app.post('/change', function(req, res){
 app.get('/menu', function(req, res) {
     if(req.session.user) {
         getQuizes().then((result) => {
-            res.render('quiz', {quizes: result, user: req.session.user});
+            if(req.session.error) {
+                let error = req.session.error
+                req.session.error = undefined;
+                res.render('quiz', {quizes: result, user: req.session.user, error: error});
+            } else {
+                res.render('quiz', {quizes: result, user: req.session.user});
+            }
         }).catch(() => {
             res.redirect("/");
         })
@@ -235,6 +241,7 @@ app.get('/quiz/:id', function(req, res) {
         getQuiz(req.params.id).then((result) => {
             getSolutions(req.session.user, req.params.id).then((result1) => {
                 if(result1[0]) {
+                    req.session.error = "Zrobiłeś już ten quiz"
                     res.redirect("/menu");
                 } else {
                     req.session.time = Date.now();

@@ -6,7 +6,7 @@ html
         div(id="stats")
             ul(id="results")
         form(method="../../menu" action="get")
-            input(type="submit", class="button", value="Powrót")
+            input(type="submit", class="button", value="Powrót" id="back")
     script.
 
         // Zamienia czas podany w sekundach na napis go reprezentujący (np. 64 -> 1:04)
@@ -42,7 +42,7 @@ html
             let penTotal = 0;
             for (var i = 0; i < size; i++) {
                 let li = document.createElement("li");
-                li.style.fontsize = "30px";
+                li.style.fontSize = "30px";
                 if (parseInt(quiz[i]["solution"]) === parseInt(answers[i])) {
                     li.innerHTML = quiz[i]["task"] + answers[i];
                     li.style.color = "green";

@@ -17,7 +17,9 @@ html
                     label(for="password") Hasło: 
                     input(type="password" name="password" id="password")
                     br
-                    input(type="submit" class="button" value="Zaloguj się")
+                    input(type="submit" class="button" id="sub" value="Zaloguj się")
+                form(action="/change" method="get" id="changeForm")
+                    input(type="submit" id="cng" class="button" value="Zmień hasło")
     script.
         let user = '#{user}';
         if (user) {
@@ -40,21 +42,14 @@ html
             form.appendChild(logOut);
             document.getElementById("logging").appendChild(form);
 
-            let change = document.createElement("form");
-            change.setAttribute("method", "get");
-            change.setAttribute("action", "/change");
-            let changeButton = document.createElement("input");
-            changeButton.setAttribute("type", "submit");
-            changeButton.setAttribute("class", "button");
-            changeButton.setAttribute("value", "Zmień hasło");
-            change.appendChild(changeButton);
-            document.getElementById("logging").appendChild(change);
+            document.getElementById("changeForm").style.display = "inline";
 
             let form1 = document.createElement("form");
             form1.setAttribute("method", "get");
             form1.setAttribute("action", "/menu");
             let quiz = document.createElement("input");
             quiz.setAttribute("type", "submit");
+            quiz.setAttribute("id", "qz");
             quiz.setAttribute("class", "button");
             quiz.setAttribute("value", "Przejdź do quizów");
             form1.appendChild(quiz);

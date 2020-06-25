@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npx ts-node test1.ts && npx ts-node test2.ts && npx ts-node test3.ts && npx ts-node clean.ts",
+    "app": "npx ts-node app.ts",
     "createdb": "npx ts-node createBase.ts"
   },
   "keywords": [],
@@ -16,6 +17,8 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "pug": "^3.0.0",
+    "selenium-webdriver": "^4.0.0-alpha.7",
+    "sqlite3": "^4.2.0",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.5"
   }

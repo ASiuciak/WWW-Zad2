@@ -22,6 +22,9 @@ body {
     grid-column: 2;
     text-align: center;
 }
+#changeForm {
+    display: none;
+}
 header {
     padding: 10px;
     text-align: center;
