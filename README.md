@@ -6,4 +6,6 @@ Aplikacja z quizami algebraicznymi. Przed jej uruchomieniem należy wywołać sk
 <b>Test 2:</b>
 * zakłada konto użytkownika o losowej nazwie, rozwiązuje quiz nr 2 (wpisuje losowe odpowiedzi), następnie próbuje rozwiązać ten sam quiz ponownie na tym samym koncie. Kończy się to niepowodzeniem, strona wyświetla alert informujący o błędzie. \
 <b>Test 3:</b>
-* zakłada konto użytkownika o losowej nazwie, rozwiązuje quiz nr 2 (wpisuje losowe odpowiedzi) przez 10 sekund, wciska przycisk "Stop", kończy na stronie z wynikami. Podczas wykonywania quizu można uruchomić zakładkę <b> Network </b> w Inspectorze i odczytać informację o requeście wysyłanym do serwera po ukończeniu quizu (metoda POST, odpowiedzi i procentowe czasy spędzone nad każdym pytaniem - w liczbach zmiennoprzecinkowych sumujących się do 1)
+* zakłada konto użytkownika o losowej nazwie, rozwiązuje quiz nr 2 (wpisuje losowe odpowiedzi) przez 10 sekund, wciska przycisk "Stop", kończy na stronie z wynikami. Podczas wykonywania quizu można uruchomić zakładkę <b> Network </b> w Inspectorze i odczytać informację o requeście wysyłanym do serwera po ukończeniu quizu (metoda POST, odpowiedzi i procentowe czasy spędzone nad każdym pytaniem - w liczbach zmiennoprzecinkowych sumujących się do 1) \
+<b> UWAGA! </b> \
+Wywołanie <b> npm run test </b> oprócz uruchomienia ww. testów, czyści bazę danych, zostawia tylko dane wpisywane przez <b> npm run createdb <\b>, czyli quizy i 2 konta: user1/user1, user2/user2.
